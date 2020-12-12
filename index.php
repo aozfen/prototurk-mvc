@@ -7,11 +7,10 @@ require __DIR__ . '/vendor/autoload.php';
 
 use \Prototurk\Core\{App, Route};
 
-require_once __DIR__ . '/App/bootstrap.php';
-
-
 $dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__);
 $dotenv->load();
+
+require_once __DIR__ . '/App/bootstrap.php';
 
 $app = new App();
 

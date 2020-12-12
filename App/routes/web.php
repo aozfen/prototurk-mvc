@@ -12,6 +12,10 @@ use \Prototurk\Core\Route;
 Route::get('/', function(){
 //    $articles = \Prototurk\Core\Database::table('articles')->get();
     return 'anasayfa';
+})->middleware("Auth");
+
+Route::get('/giris-yap', function(){
+  return 'giriş';
 });
 
 Route::get('/@:username', function ($username) {

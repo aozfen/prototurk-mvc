@@ -76,27 +76,27 @@ class Request extends Singleton
 
 	/**
 	 * Bir middleware tanımlar
-	 *
+     *
+	 * @param string $key
 	 * @param string $middleware
 	 * @return void
 	 */
-	protected static function middleware(string $middleware): void
+	protected static function middleware(string $key, string $middleware): void
 	{
-		self::$middlewares[] = new $middleware();
+		self::$middlewares[$key] = new $middleware();
 	}
 
 	/**
 	 * Tanımlanan middleware'ler ile isteği duraklatır ve tanımlanan interrupt'ları çağırır.
 	 *
+     * @param string $key
 	 * @return void
 	 */
-	public function dispatch(): void
+	public function dispatch(string $key): void
 	{
-		if (count(self::$middlewares)) {
-			foreach (self::$middlewares as $interrupt) {
-				$interrupt->interrupt();
-			}
-		}
+      if (count(self::$middlewares)) {
+        self::$middlewares[$key]->interrupt();
+      }
 	}
 
 	/**
@@ -106,8 +106,8 @@ class Request extends Singleton
 	*/
 	public static function setMiddlewares(array $middlewares): void
 	{
-		foreach ($middlewares as $middleware) {
-			self::middleware($middleware);
+		foreach ($middlewares as $key => $middleware) {
+          self::middleware($key,$middleware);
 		}
 	}
 

@@ -62,9 +62,12 @@ class Route
                     Redirect::to($props['redirect'], $props['status']);
                 } else {
 
-                    $callback = $props['callback'];
-					request()->dispatch();
-                    if (is_callable($callback)) {
+                  $callback = $props['callback'];
+                  if(isset($props['middleware'])) {
+                     request()->dispatch($props['middleware']);
+                  }
+
+                  if (is_callable($callback)) {
                         echo call_user_func_array($callback, $params);
                     } elseif (is_string($callback)) {
 
@@ -132,6 +135,15 @@ class Route
     public function where($key, $pattern)
     {
         self::$patterns[':' . $key] = '(' . $pattern . ')';
+    }
+
+  /**
+   * @param string $middlewareKey
+   */
+    public function middleware(string $middlewareKey): void
+    {
+      $key = array_key_last(self::$routes['get']);
+      self::$routes['get'][$key]['middleware'] = $middlewareKey;
     }
 
     public static function redirect($from, $to, $status = 301)
