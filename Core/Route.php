@@ -16,6 +16,20 @@ class Route
     public static array $routes = [];
     public static string $prefix = '';
 
+    static array $currentPathRow = [];
+
+    /**
+     * @param string $method
+     * @param string $path
+     */
+    static function setCurrentPathRow(string $method, string $path): void
+    {
+        self::$currentPathRow = [
+            "method" => $method,
+            "path" => $path
+        ];
+    }
+
     /**
      * @param $path
      * @param $callback
@@ -23,6 +37,7 @@ class Route
      */
     public static function get(string $path, $callback): Route
     {
+        self::setCurrentPathRow("get", $path);
         self::$routes['get'][self::$prefix . $path] = [
             'callback' => $callback
         ];
@@ -35,6 +50,7 @@ class Route
      */
     public static function post(string $path, $callback): void
     {
+        self::setCurrentPathRow("post", $path);
         self::$routes['post'][$path] = [
             'callback' => $callback
         ];
@@ -142,8 +158,9 @@ class Route
    */
     public function middleware(string $middlewareKey): void
     {
-      $key = array_key_last(self::$routes['get']);
-      self::$routes['get'][$key]['middleware'] = $middlewareKey;
+        $method = self::$currentPathRow["method"];
+        $path = self::$currentPathRow["path"];
+        self::$routes[$method][$path]['middleware'] = $middlewareKey;
     }
 
     public static function redirect($from, $to, $status = 301)
